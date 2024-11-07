@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es6",                  // Use ES6 for compatibility with modern browsers
+    "module": "commonjs",              // Use CommonJS module format
+    "outDir": "./dist",                // Output compiled JavaScript to `dist` directory
+    "strict": true,                    // Enable strict type-checking for safer code
+    "sourceMap": true                  // Enable source maps for easier debugging
+  },
+  "include": ["src"]                   // Only compile files in the `src` folder
+}
