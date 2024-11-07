@@ -1,5 +1,14 @@
 {
+  "name": "space-rocks",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "lite-server",                   
+    "build": "tsc",                           
+    "watch": "tsc --watch",                   
+    "dev": "npm run watch & npm run start" 
+  },
   "devDependencies": {
+    "lite-server": "^2.6.1",
     "typescript": "^5.6.3"
   }
 }
