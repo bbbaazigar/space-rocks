@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",                  // Use ES6 for compatibility with modern browsers
-    "module": "commonjs",              // Use CommonJS module format
+    "module": "ESNext",              // Use ESNext module format
     "outDir": "./dist",                // Output compiled JavaScript to `dist` directory
     "strict": true,                    // Enable strict type-checking for safer code
-    "sourceMap": true                  // Enable source maps for easier debugging
+    "sourceMap": true,                  // Enable source maps for easier debugging
+    "moduleResolution": "Node"
   },
   "include": ["src"]                   // Only compile files in the `src` folder
 }
