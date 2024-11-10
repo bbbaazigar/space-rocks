@@ -1,3 +1,6 @@
+import { Keyboard, Keys } from "./keyboard.js";
+import { Vec2 } from "./vec2.js";
+
 const CANVAS_ID = "gameCanvas";
 const canvas = document.getElementById(CANVAS_ID) as HTMLCanvasElement;
 if (!canvas) {
@@ -11,12 +14,17 @@ if (!ctx) {
 
 const HEIGHT = canvas.height;
 const WIDTH = canvas.width;
+const keyboard = new Keyboard(window);
+const FORCE_MAG = 350;
+const MAX_SPEED = 500;
+const TURN_SPEED = 250;
+const DRAG = 0.05;
 
 const player = {
-    pos: {
-        x: 400,
-        y: 100
-    }
+    pos: new Vec2(300, 100),
+    velocity: new Vec2(0, 0),
+    angle: 270,
+    thrust: 0
 }
 
 let lastTime = 0;
@@ -48,18 +56,28 @@ function clearScreen(ctx: CanvasRenderingContext2D) {
  * @param player {any}
  */
 function drawPlayer(ctx: CanvasRenderingContext2D, player: any) {
-    const height = 15;
-    const width = 10;
+    const height = 20 * 1;
+    const width = 10 * 1;
 
     const points = [
-        { x: height, y: 0 },
-        { x: -height, y: -width },
-        { x: -height, y: width }
-    ];
+        new Vec2(height, 0),
+        new Vec2(-height, -width),
+        new Vec2(-height + height / 2, -width / 2),
+        new Vec2(-height + height / 2, width / 2),
+        new Vec2(-height, width)
+    ].map(v => v.rotate(player.angle));
+
+    const flame = [
+        new Vec2(-height + height / 2, -width / 2),
+        new Vec2(-height, 0),
+        new Vec2(-height + height / 2, width / 2)
+    ].map(v  => v.rotate(player.angle));
 
     ctx.save(); // save old state so that we don't polute the ctx
+
     ctx.translate(player.pos.x, player.pos.y);
     ctx.strokeStyle = "white";
+    // draw ship 
     ctx.beginPath();
 
     const tip = points[0];
@@ -71,14 +89,67 @@ function drawPlayer(ctx: CanvasRenderingContext2D, player: any) {
     ctx.closePath();
     ctx.stroke();
 
+    // draw flame
+    if (player.thrust > 0) {
+        ctx.beginPath();
+
+        const flameTip = flame[0];
+        ctx.moveTo(flameTip.x, flameTip.y);
+        for (let i = 1; i < flame.length; i++) {
+            ctx.lineTo(flame[i].x, flame[i].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }
+
     ctx.restore();
 
 }
 
 function update(player: any, dt: number) {
-    player.pos.x += 150 * dt;
-    player.pos.x %= WIDTH;
-    console.log(player.pos.x, dt);
+
+    player.thrust = 0;
+
+    if (keyboard.isKeyDown(Keys.A) || keyboard.isKeyDown(Keys.LEFT)) {
+        player.angle -= TURN_SPEED * dt;
+    }
+    if (keyboard.isKeyDown(Keys.D) || keyboard.isKeyDown(Keys.RIGHT)) {
+        player.angle += TURN_SPEED * dt;
+    }
+    if (keyboard.isKeyDown(Keys.W) || keyboard.isKeyDown(Keys.UP)) {
+        player.thrust = FORCE_MAG;
+    }
+
+    // F = M * A
+    // A = F / M say mass is 1 so A = F
+    // dV = A * dt change in velocity since A = F dV = F * dt
+    // velocity = velocity + dv = velocity + A * dt
+
+    const force = Vec2.fromAngle(player.angle).scale(player.thrust);
+    const mass = 1;
+    const acc = force.scale(1 / mass);
+    player.velocity = player.velocity.add(acc.scale(dt));
+    
+    const speed = player.velocity.magnitude();
+
+    //don't exceed max speed.
+    if (speed > MAX_SPEED) {
+        player.velocity = player.velocity.scale(MAX_SPEED / speed);
+    }
+
+    // drag
+    if (player.thrust == 0) {
+        player.velocity = player.velocity.scale(1 - DRAG);
+    }
+
+
+    player.pos.x += player.velocity.x * dt;
+    player.pos.y += player.velocity.y * dt;
+
+    player.pos.x = ((player.pos.x % WIDTH) + WIDTH) % WIDTH;
+    player.pos.y = ((player.pos.y % HEIGHT) + HEIGHT) % HEIGHT;
+
+
 }
 
 requestAnimationFrame((timestamp) => loop(timestamp, ctx));
