@@ -15,6 +15,7 @@ let lastTime = 0;
 /**
  * Main gameLoop
  * @param now {number}
+ * @param ctx {CanvasRenderingContext2D}
  */
 function loop(now: number, ctx: CanvasRenderingContext2D) {
 
@@ -29,7 +30,7 @@ function loop(now: number, ctx: CanvasRenderingContext2D) {
 }
 
 function clearScreen(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = "#181818";
+    ctx.fillStyle = "#101010";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 }
 

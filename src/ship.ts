@@ -6,6 +6,9 @@ const SHIP_FORCE_MAG = 350;
 const SHIP_MAX_SPEED = 500;
 const SHIP_TURN_SPEED = 250;
 const SHIP_DRAG = 0.05;
+const SHIP_MASS = 1;
+const SHIP_HEIGHT = 20;
+const SHIP_WIDTH = 10;
 
 export class Ship {
     private angle: number;
@@ -39,8 +42,7 @@ export class Ship {
         // velocity = velocity + dv = velocity + A * dt
 
         const force = Vec2.fromAngle(this.angle).scale(this.thrust);
-        const mass = 1;
-        const acc = force.scale(1 / mass);
+        const acc = force.scale(1 / SHIP_MASS);
         this.velocity = this.velocity.add(acc.scale(dt));
 
         const speed = this.velocity.magnitude();
@@ -66,21 +68,19 @@ export class Ship {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        const height = 20 * 1;
-        const width = 10 * 1;
 
         const points = [
-            new Vec2(height, 0),
-            new Vec2(-height, -width),
-            new Vec2(-height + height / 2, -width / 2),
-            new Vec2(-height + height / 2, width / 2),
-            new Vec2(-height, width)
+            new Vec2(SHIP_HEIGHT, 0),
+            new Vec2(-SHIP_HEIGHT, -SHIP_WIDTH),
+            new Vec2(-SHIP_HEIGHT + SHIP_HEIGHT / 2, -SHIP_WIDTH / 2),
+            new Vec2(-SHIP_HEIGHT + SHIP_HEIGHT / 2, SHIP_WIDTH / 2),
+            new Vec2(-SHIP_HEIGHT, SHIP_WIDTH)
         ].map(v => v.rotate(this.angle));
 
         const flame = [
-            new Vec2(-height + height / 2, -width / 2),
-            new Vec2(-height, 0),
-            new Vec2(-height + height / 2, width / 2)
+            new Vec2(-SHIP_HEIGHT + SHIP_HEIGHT / 2, -SHIP_WIDTH / 2),
+            new Vec2(-SHIP_HEIGHT, 0),
+            new Vec2(-SHIP_HEIGHT + SHIP_HEIGHT / 2, SHIP_WIDTH / 2)
         ].map(v => v.rotate(this.angle));
 
         ctx.save(); // save old state so that we don't polute the ctx

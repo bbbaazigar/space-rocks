@@ -8,6 +8,7 @@ let lastTime = 0;
 /**
  * Main gameLoop
  * @param now {number}
+ * @param ctx {CanvasRenderingContext2D}
  */
 function loop(now, ctx) {
     const deltaTime = (now - lastTime) / 1000; //dt in seconds
@@ -18,7 +19,7 @@ function loop(now, ctx) {
     requestAnimationFrame((newTimestamp) => loop(newTimestamp, ctx));
 }
 function clearScreen(ctx) {
-    ctx.fillStyle = "#181818";
+    ctx.fillStyle = "#101010";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 }
 requestAnimationFrame((timestamp) => loop(timestamp, ctx));
