@@ -6,8 +6,8 @@ const SHIP_MAX_SPEED = 500;
 const SHIP_TURN_SPEED = 250;
 const SHIP_DRAG = 0.05;
 const SHIP_MASS = 1;
-const SHIP_HEIGHT = 20;
-const SHIP_WIDTH = 10;
+const SHIP_HEIGHT = 18;
+const SHIP_WIDTH = 8;
 export class Ship {
     constructor(pos, velocity, input) {
         this.pos = pos;
